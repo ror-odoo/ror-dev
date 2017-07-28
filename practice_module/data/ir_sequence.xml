@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        
+        <record id="seq_vehicle_registration_code" model="ir.sequence">
+            <field name="name">Vehicle Registration code</field>
+            <field name="code">vehicle.code</field>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="seq_package_book_code" model="ir.sequence">
+            <field name="name">Package Booking code</field>
+            <field name="code">package.code</field>
+            <field name="prefix">%(year)s/%(month)s/</field>
+            <field name="padding">4</field>
+        </record>
+
+    </data>
+</odoo>

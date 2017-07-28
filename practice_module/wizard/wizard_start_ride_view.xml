@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <record id="view_start_ride_form" model="ir.ui.view">
+            <field name="name">start.ride.form</field>
+            <field name="model">wizard.start_ride</field>
+            <field name="arch" type="xml">
+                <form string="Start Ride Information">
+                    <separator string="Start Ride Information"
+                        colspan="4" />
+                    <group colspan="4" col="6">
+                        <field name="start_ride_date" />
+                        <field name="start_km"/>
+                    </group>
+                    <footer>
+                        <button class="btn btn-sm btn-default fa fa-circle-play"
+                            name="start_ride" string="Start Ride" type="object" />
+                        <button class="btn btn-sm btn-default fa fa-ban"
+                            special="cancel" string="Close" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    
+        <record id="action_start_ride" model="ir.actions.act_window">
+            <field name="name">Start Ride</field>
+            <field name="res_model">wizard.start_ride</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+</odoo>

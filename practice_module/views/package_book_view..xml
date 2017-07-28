@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="package_book_form_view" model="ir.ui.view">
+        <field name="name">package.book.form</field>
+        <field name="model">package.book</field>
+        <field name="arch" type="xml">
+            <form string="Package" col="1">
+                <header>
+                    <button name="confirm_booking" type="object"
+                        string="Confirm Booking" states="draft" class="btn-primary" />
+                    <button name="cancel_package" type="object"
+                        string="Cancel Package"
+                        class="btn-primary" attrs = "{'invisible':['|',('total_amount','>',0.00),('state','=','cancel')]}"/>
+                    <button name="%(action_create_invoice)d " string="Create Invoice" type="action"
+                    attrs = "{'invisible':['|',('total_amount','=',0.00),('state','in',('draft','cancel'))]}"/>
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,confirm,cancel" />
+                </header>
+                <sheet>
+                    <form string="Package Details">
+                        <h3>
+                            <label for="name" string="Packge No" />
+                            <field name="name" readonly="1" />
+                        </h3>
+                        <group cols="4">
+                            <group string="Customer Infromation">
+                                <field name="book_date"
+                                    attrs="{'readonly':[('state','!=','draft')]}" />
+                                <field name="partner_id"
+                                    domain="[('customer','=',True)]"
+                                    attrs="{'readonly':[('state','!=','draft')]}" />
+                                <field name="mobile" required="1" />
+                                <field name="invoice_id"/>
+                            </group>
+                            <group string="Driver  Information">
+                                <field name="driver_id"
+                                    domain="[('is_driver','=',True)]" />
+                                <field name="driver_mobile_no"
+                                    required="1" />
+                            </group>
+                            <group string="Contact Information">
+                                <field name="pickup_address"
+                                    attrs="{'readonly':[('state','!=','draft')]}" />
+                                <label for="street" string="Address" />
+                                <div class="o_address_format">
+                                    <field name="street"
+                                        placeholder="Street..." class="o_address_street"
+                                        required="1"
+                                        attrs="{'readonly':[('state','in',['running','cancel','stop'])]}" />
+                                    <field name="street2"
+                                        placeholder="Street2..." class="o_address_street"
+                                        attrs="{'readonly':[('state','in',['running','cancel','stop'])]}" />
+                                    <field name="city"
+                                        placeholder="City" class="o_address_city"
+                                        required="1"
+                                        attrs="{'readonly':[('state','in',['running','cancel','stop'])]}" />
+                                    <field name="state_id"
+                                        domain="[('country_id','=',country_id)]"
+                                        class="o_address_state"
+                                        placeholder="State"
+                                        options="{&quot;no_open&quot;: true}"
+                                        required="1"
+                                        attrs="{'readonly':[('state','in',['running','cancel','stop'])]}" />
+                                    <field name="zip" placeholder="Zip"
+                                        class="o_address_zip" required="1"
+                                        attrs="{'readonly':[('state','in',['running','cancel','stop'])]}" />
+                                    <field name="country_id"
+                                        placeholder="Country" class="oe_no_button"
+                                        options="{&quot;no_open&quot;: true}"
+                                        required="1"
+                                        attrs="{'readonly':[('state','in',['running','cancel','stop'])]}" />
+                                </div>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Vehicle Details">
+                                <field name="package_lines">
+                                    <tree editable="top">
+                                        <field name="package_id"
+                                            invisible="1" />
+                                        <field name="vehicle_id" domain="[('is_book','=',False)]"/>
+                                        <field name="vehicle_price" />
+                                        <field name="name" />
+                                        <field name="state" />
+                                        <field name="start_ride_date"/>
+                                        <field name="end_ride_date"/>
+                                        <field name="start_km"/>
+                                        <field name="end_km"/>
+                                        <field name="total_km"/>
+                                        <field name="subtotal" />
+                                        <button name="%(action_start_ride)d"
+                                            type="action" string="Start Ride"
+                                            icon="fa-play-circle"
+                                            context="{'vehicle_id':vehicle_id,'package_id':package_id}"
+                                            states="confirm" />
+                                        <button name="%(action_stop_ride)d"
+                                            type="action" string="Stop Ride"
+                                            context="{'vehicle_id':vehicle_id,'package_id':package_id}"
+                                            icon="fa-stop" states="running"/>
+                                        <button name="cancel_ride"
+                                            type="object" string="Cancel Ride"
+                                            icon="fa-times-circle" states="confirm"/>
+                                    </tree>
+                                </field>
+                                <group class="oe_subtotal_footer oe_right"
+                                    colspan="2" name="package_total">
+                                    <field name="total_amount"
+                                        class="oe_subtotal_footer_separator"
+                                        widget="monetary"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </form>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_package_booking_tree" model="ir.ui.view">
+        <field name="name">package.book.tree</field>
+        <field name="model">package.book</field>
+        <field eval="8" name="priority" />
+        <field name="arch" type="xml">
+            <tree string="Packages">
+                <field name="name" />
+                <field name="partner_id" />
+                <field name="driver_id" />
+                <field name="mobile" />
+                <field name="driver_mobile_no" />
+                <field name="total_amount" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_package_booking_form" model="ir.actions.act_window">
+        <field name="name">Book Packages</field>
+        <field name="res_model">package.book</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="filter" eval="True" />
+    </record>
+
+    <record id="action_package_booking_form_view1" model="ir.actions.act_window.view">
+        <field eval="10" name="sequence" />
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_package_booking_tree" />
+        <field name="act_window_id" ref="action_package_booking_form" />
+    </record>
+    <record id="action_package_booking_form_view2" model="ir.actions.act_window.view">
+        <field eval="20" name="sequence" />
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="package_book_form_view" />
+        <field name="act_window_id" ref="action_package_booking_form" />
+    </record>
+
+    <menuitem id="package_book_menu" name="Book Packages"
+        parent="top_travel_service" sequence="2" />
+
+    <menuitem id="package_book_menu_sub_menu" name="Book Packages"
+        parent="package_book_menu" action="action_package_booking_form"
+        sequence="1" />
+
+</odoo>

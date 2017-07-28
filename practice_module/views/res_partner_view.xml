@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+            <record id="res_partner_driver_form_view" model="ir.ui.view">
+                <field name="name">res.partner.driver.form</field>
+                <field name="model">res.partner</field>
+                <field name="arch" type="xml">
+                    <form string="Partners" col="1">
+                        <sheet>
+                            <form string="Driver Contacts">
+                                <newline />
+                                <group>
+                                    <field name="is_driver" readonly="1" />
+                                    <field name="license_no" attrs = "{'required':[('is_driver','=',True)],
+                                                                      'invisible':[('is_driver','=',False)],}"/>
+                                </group>
+                                <div class="oe_title">
+                                    <h1>
+                                        <field name="name" placeholder="Name" required="1" />
+                                    </h1>
+                                </div>
+                                <group cols="4">
+                                    <group string="Address">
+                                        <label for="street" string="Address" />
+                                        <div class="o_address_format">
+                                            <field name="street"  placeholder="Street..." class="o_address_street" />
+                                            <field name="street2" placeholder="Street2..." class="o_address_street" />
+                                            <field name="city" placeholder="City" required="1" class="o_address_city" />
+                                            <field name="state_id" domain="[('country_id','=',country_id)]" class="o_address_state"
+                                                required="1" placeholder="State" options="{&quot;no_open&quot;: true}" />
+                                            <field name="zip" placeholder="Zip" class="o_address_zip" />
+                                            <field name="country_id" placeholder="Country" class="oe_no_button"
+                                                options="{&quot;no_open&quot;: true}" required="1" />
+                                        </div>
+                                    </group>
+                                    <group string="Communication">
+                                        <field name="mobile" placeholder="Mobile Number" required="1"/>
+                                        <field name="email" widget="email" required="1" placeholder="Email" />
+                                    </group>
+                                </group>
+                            </form>
+                        </sheet>
+                    </form>
+                </field>
+            </record>
+
+            <record id="view_res_partner_driver_filter" model="ir.ui.view">
+                <field name="name">res.partner.driver.select</field>
+                <field name="model">res.partner</field>
+                <field name="arch" type="xml">
+                    <search string="Search Driver">
+                        <group col="10" colspan="4">
+                            <field name="name" select="1" />
+                            <field name="country_id" select="1" />
+                            <field name="license_no" select="1"/>
+                        </group>
+                        <separator/>
+                        <filter string="Drivers" name="is_driver" domain="[('is_driver','=',True)]"/>
+                    </search>
+                </field>
+            </record>
+            
+            <record id="view_driver_tree" model="ir.ui.view">
+                <field name="name">res.partner.tree</field>
+                <field name="model">res.partner</field>
+                <field eval="8" name="priority" />
+                <field name="arch" type="xml">
+                    <tree string="Drivers">
+                        <field name="name" />
+                        <field name="license_no"/>
+                        <field name="phone" />
+                        <field name="email" />
+                        <field name="city" />
+                        <field name="country_id" />
+                    </tree>
+                </field>
+            </record>
+            
+            <record id="action_driver_form" model="ir.actions.act_window">
+                <field name="name">Drivers</field>
+                <field name="res_model">res.partner</field>
+                <field name="view_type">form</field>
+                <field name="view_mode">kanban,tree,form</field>
+                <field name="search_view_id" ref="view_res_partner_driver_filter" />
+                <field name="domain">[('is_driver','=',True)]</field>
+                <field name="context">{'search_default_is_driver': 1,'default_customer': 0,'default_supplier': 0, 'default_is_driver': 1}</field>
+                <field name="filter" eval="True" />
+            </record>
+            
+            <record id="action_driver_form_view1" model="ir.actions.act_window.view">
+                <field eval="10" name="sequence" />
+                <field name="view_mode">tree</field>
+                <field name="view_id" ref="view_driver_tree" />
+                <field name="act_window_id" ref="action_driver_form" />
+            </record>
+            <record id="action_driver_form_view2" model="ir.actions.act_window.view">
+                <field eval="20" name="sequence" />
+                <field name="view_mode">form</field>
+                <field name="view_id" ref="res_partner_driver_form_view" />
+                <field name="act_window_id" ref="action_driver_form" />
+            </record>
+
+            <menuitem id="res_partner_driver" name="Drivers" 
+                      parent="practice_module.vehicle_registration_menu" 
+                      action = "action_driver_form"
+                      sequence="2"/>
+
+
+</odoo>
