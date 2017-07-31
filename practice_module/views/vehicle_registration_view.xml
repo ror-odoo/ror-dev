@@ -104,7 +104,7 @@
            <menuitem id="vehicle_registration_menu" 
                      name="Vehicle Registration" 
                      parent="top_travel_service"
-                     sequence="1"/>
+                     sequence="2"/>
 
             <menuitem id="vehicle_registration_sub_menu" name="Vehicle Registration" 
                       parent="vehicle_registration_menu" 

@@ -1,5 +1,12 @@
 from odoo import fields, models, api, _
 from odoo.exceptions import UserError
+from datetime import datetime
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
+
+class account_invoice(models.Model):
+    _inherit = 'account.invoice'
+
+    package_id = fields.Many2one('package.book',string="Package Ref.")
 
 class package_book(models.Model):
     _name = 'package.book'
@@ -11,10 +18,39 @@ class package_book(models.Model):
                 raise UserError(_('You can not delete a Tour Package! Try to cancel it before.'))
         return super(package_book, self).unlink()
 
+    @api.onchange('book_date')
+    def onchange_date(self):
+        if self.book_date:
+            if datetime.strptime(self.book_date, DEFAULT_SERVER_DATE_FORMAT).date() < datetime.now().date():
+                raise UserError('Please select a date equal/or greater than the current date')
+                return False
+
+    @api.multi
+    def action_view_invoice(self):
+        invoices = self.env['account.invoice'].search([('package_id','=',self.id)])
+        action = self.env.ref('account.action_invoice_tree1').read()[0]
+        if len(invoices) > 1:
+            action['domain'] = [('id', 'in', invoices)]
+        elif len(invoices) == 1:
+            action['views'] = [(self.env.ref('account.invoice_form').id, 'form')]
+            action['res_id'] = invoices.ids[0]
+        else:
+            action = {'type': 'ir.actions.act_window_close'}
+        return action
+
+    @api.multi
+    @api.depends('state')
+    def _get_invoiced(self):
+        for each in self:
+            invoice_ids = self.env['account.invoice'].search([('package_id','=',each.id)])
+            if invoice_ids:
+                self.invoice_count =  len(invoice_ids)
+
     @api.multi
     @api.depends('package_lines.subtotal', 'package_lines.total_km')
     def _compute_total_amount(self):
         self.total_amount = sum([x.subtotal for x in self.package_lines])
+
 
     @api.onchange('pickup_address')
     def onchange_pickup_address(self):
@@ -44,7 +80,7 @@ class package_book(models.Model):
     state = fields.Selection([('draft', 'Draft'),
                               ('confirm', 'Confirmed'),
                               ('cancel', 'Cancel')], string="Status", default='draft')
-    invoice_id = fields.Many2one('account.invoice', copy=False, readonly=True,string="Invoice Ref")
+    invoice_count = fields.Integer(string='# of Invoices', compute='_get_invoiced', readonly=True)
 
     @api.model
     def create(self, vals):
@@ -100,7 +136,10 @@ class package_booking_line(models.Model):
                               ('confirm', 'Confirmed'),
                               ('running', 'Running'),
                               ('stop', 'Stop'),
+                              ('invoice', 'To Invoice'),
                               ('cancel', 'Cancel')], string="Status", copy=False, store=True, default='draft')
+    invoiced = fields.Boolean(string="Invoiced")
+    invoice_lines = fields.Many2many('account.invoice.line', 'package_line_invoice_rel', 'package_line_id', 'invoice_line_id', string='Invoice Lines', copy=False)
 
     @api.onchange('vehicle_id')
     def onchange_vehicle_id(self):

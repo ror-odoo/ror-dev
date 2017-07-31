@@ -4,3 +4,4 @@
 import res_partner
 import vehicle_registration
 import package_book
+import package_dashboard

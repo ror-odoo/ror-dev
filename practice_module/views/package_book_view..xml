@@ -10,14 +10,22 @@
                     <button name="confirm_booking" type="object"
                         string="Confirm Booking" states="draft" class="btn-primary" />
                     <button name="cancel_package" type="object"
-                        string="Cancel Package"
-                        class="btn-primary" attrs = "{'invisible':['|',('total_amount','>',0.00),('state','=','cancel')]}"/>
-                    <button name="%(action_create_invoice)d " string="Create Invoice" type="action"
-                    attrs = "{'invisible':['|',('total_amount','=',0.00),('state','in',('draft','cancel'))]}"/>
+                        string="Cancel Package" class="btn-primary"
+                        attrs="{'invisible':['|',('total_amount','>',0.00),('state','=','cancel')]}" />
+                    <button name="%(action_create_invoice)d "
+                        string="Create Invoice" type="action"
+                        attrs="{'invisible':['|',('total_amount','=',0.00),('state','in',('draft','cancel'))]}" />
                     <field name="state" widget="statusbar"
                         statusbar_visible="draft,confirm,cancel" />
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_invoice" type="object"
+                            class="oe_stat_button" icon="fa-pencil-square-o" attrs = "{'invisible':[('invoice_count','=',0)]}">
+                            <field name="invoice_count" widget="statinfo"
+                                string="Invoices" />
+                        </button>
+                    </div>
                     <form string="Package Details">
                         <h3>
                             <label for="name" string="Packge No" />
@@ -31,7 +39,6 @@
                                     domain="[('customer','=',True)]"
                                     attrs="{'readonly':[('state','!=','draft')]}" />
                                 <field name="mobile" required="1" />
-                                <field name="invoice_id"/>
                             </group>
                             <group string="Driver  Information">
                                 <field name="driver_id"
@@ -79,16 +86,19 @@
                                     <tree editable="top">
                                         <field name="package_id"
                                             invisible="1" />
-                                        <field name="vehicle_id" domain="[('is_book','=',False)]"/>
+                                        <field name="vehicle_id"
+                                            domain="[('is_book','=',False)]" />
                                         <field name="vehicle_price" />
                                         <field name="name" />
                                         <field name="state" />
-                                        <field name="start_ride_date"/>
-                                        <field name="end_ride_date"/>
-                                        <field name="start_km"/>
-                                        <field name="end_km"/>
-                                        <field name="total_km"/>
+                                        <field name="start_ride_date" />
+                                        <field name="end_ride_date" />
+                                        <field name="start_km" />
+                                        <field name="end_km" />
+                                        <field name="total_km" />
                                         <field name="subtotal" />
+                                        <field name="invoiced"
+                                            invisible="1" />
                                         <button name="%(action_start_ride)d"
                                             type="action" string="Start Ride"
                                             icon="fa-play-circle"
@@ -97,17 +107,18 @@
                                         <button name="%(action_stop_ride)d"
                                             type="action" string="Stop Ride"
                                             context="{'vehicle_id':vehicle_id,'package_id':package_id}"
-                                            icon="fa-stop" states="running"/>
+                                            icon="fa-stop" states="running" />
                                         <button name="cancel_ride"
                                             type="object" string="Cancel Ride"
-                                            icon="fa-times-circle" states="confirm"/>
+                                            icon="fa-times-circle"
+                                            states="confirm" />
                                     </tree>
                                 </field>
                                 <group class="oe_subtotal_footer oe_right"
                                     colspan="2" name="package_total">
                                     <field name="total_amount"
                                         class="oe_subtotal_footer_separator"
-                                        widget="monetary"/>
+                                        widget="monetary" />
                                 </group>
                             </page>
                         </notebook>
@@ -122,13 +133,14 @@
         <field name="model">package.book</field>
         <field eval="8" name="priority" />
         <field name="arch" type="xml">
-            <tree string="Packages">
+            <tree string="Packages" decoration-muted="state == 'cancel'">
                 <field name="name" />
                 <field name="partner_id" />
                 <field name="driver_id" />
                 <field name="mobile" />
                 <field name="driver_mobile_no" />
                 <field name="total_amount" />
+                <field name="state" />
             </tree>
         </field>
     </record>
@@ -155,7 +167,7 @@
     </record>
 
     <menuitem id="package_book_menu" name="Book Packages"
-        parent="top_travel_service" sequence="2" />
+        parent="top_travel_service" sequence="3" />
 
     <menuitem id="package_book_menu_sub_menu" name="Book Packages"
         parent="package_book_menu" action="action_package_booking_form"

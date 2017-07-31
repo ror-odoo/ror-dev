@@ -3,7 +3,7 @@
 
         <record id="view_start_ride_form" model="ir.ui.view">
             <field name="name">start.ride.form</field>
-            <field name="model">wizard.start_ride</field>
+            <field name="model">wizard.start.ride</field>
             <field name="arch" type="xml">
                 <form string="Start Ride Information">
                     <separator string="Start Ride Information"
@@ -24,7 +24,7 @@
     
         <record id="action_start_ride" model="ir.actions.act_window">
             <field name="name">Start Ride</field>
-            <field name="res_model">wizard.start_ride</field>
+            <field name="res_model">wizard.start.ride</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>

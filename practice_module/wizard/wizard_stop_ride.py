@@ -24,4 +24,4 @@ class wizard_stop_ride(models.TransientModel):
                                    'total_km':total_km,
                                    'state':'stop'})
             package_line_id.vehicle_id.write({'is_book':False})
-        return True
+        return {'type': 'ir.actions.client', 'tag': 'reload'}
