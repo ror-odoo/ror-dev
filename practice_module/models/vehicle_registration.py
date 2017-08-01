@@ -16,9 +16,10 @@ class vehicle_registration(models.Model):
     mobile = fields.Char(string="Mobile No.")
     date_of_birth = fields.Date(string="Date of Birth")
     age = fields.Integer(string="Age")
-    vehicle_type = fields.Selection([('4', 'Four Seater'),
-                                     ('mini_bus', 'MiniBus'),
-                                     ('7', 'Seven Seater')], string="Vehicle Type", default='4')
+    image = fields.Binary(string="Image")
+    vehicle_type = fields.Selection([('Four Seater', 'Four Seater'),
+                                     ('MiniBus', 'MiniBus'),
+                                     ('Seven Seater', 'Seven Seater')], string="Vehicle Type", default='Seven Seater')
     price_per_km = fields.Float(string="Price Per KM")
     is_book = fields.Boolean(string="Is Book", copy=False)
 
@@ -42,12 +43,12 @@ class vehicle_registration(models.Model):
 
     @api.multi
     def name_get(self):
-        TYPES = {
-            '4': _('Four Seater'),
-            'mini_bus': _('MiniBus'),
-            '7': _('Seven Seater'),
-        }
+#         TYPES = {
+#             '4': _('Four Seater'),
+#             'mini_bus': _('MiniBus'),
+#             '7': _('Seven Seater'),
+#         }
         result = []
         for vehicle in self:
-            result.append((vehicle.id, "%s / %s / %s" % (vehicle.name, TYPES[vehicle.vehicle_type], vehicle.price_per_km)))
+            result.append((vehicle.id, "%s / %s / %s" % (vehicle.name, vehicle.vehicle_type, vehicle.price_per_km)))
         return result

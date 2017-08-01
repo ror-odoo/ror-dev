@@ -8,11 +8,12 @@
     'sequence': 30,
     'description': """Transport Service""",
     'category': 'sale',
-    'depends' : ['base_setup', 'account_accountant','board'],
+    'depends' : ['base_setup', 'account_accountant', 'board'],
     'data': 
         [
             'security/ir.model.access.csv',
-            'data//ir_sequence.xml',
+            'data/ir_sequence.xml',
+            'data/data.xml',
             'report/report.xml',
             'wizard/wizard_start_ride_view.xml',
             'wizard/wizard_stop_ride_view.xml',
@@ -23,6 +24,7 @@
             'views/package_book_view..xml',
             'views/package_dashboard_view.xml',
             'views/package_dashboard_view.xml',
+            'views/templates.xml'
         ],
     'installable': True,
     'application': False,

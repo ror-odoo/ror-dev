@@ -6,10 +6,17 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 class account_invoice(models.Model):
     _inherit = 'account.invoice'
 
-    package_id = fields.Many2one('package.book',string="Package Ref.")
+    package_id = fields.Many2one('package.book', string="Package Ref.")
 
 class package_book(models.Model):
     _name = 'package.book'
+
+#     @api.model
+#     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+#         result = super(package_book, self).fields_view_get(view_id, view_type, toolbar=toolbar, submenu=submenu)
+#         doc = etree.XML(result['arch'])
+#         print "\n--------doc",doc
+#         return result
 
     @api.multi
     def unlink(self):
@@ -27,10 +34,10 @@ class package_book(models.Model):
 
     @api.multi
     def action_view_invoice(self):
-        invoices = self.env['account.invoice'].search([('package_id','=',self.id)])
+        invoices = self.env['account.invoice'].search([('package_id', '=', self.id)])
         action = self.env.ref('account.action_invoice_tree1').read()[0]
         if len(invoices) > 1:
-            action['domain'] = [('id', 'in', invoices)]
+            action['domain'] = [('id', 'in', invoices.ids)]
         elif len(invoices) == 1:
             action['views'] = [(self.env.ref('account.invoice_form').id, 'form')]
             action['res_id'] = invoices.ids[0]
@@ -42,9 +49,9 @@ class package_book(models.Model):
     @api.depends('state')
     def _get_invoiced(self):
         for each in self:
-            invoice_ids = self.env['account.invoice'].search([('package_id','=',each.id)])
+            invoice_ids = self.env['account.invoice'].search([('package_id', '=', each.id)])
             if invoice_ids:
-                self.invoice_count =  len(invoice_ids)
+                self.invoice_count = len(invoice_ids)
 
     @api.multi
     @api.depends('package_lines.subtotal', 'package_lines.total_km')
@@ -93,6 +100,8 @@ class package_book(models.Model):
     @api.multi
     def confirm_booking(self):
         for each in self:
+            if not each.package_lines:
+                raise UserError(_('Please create some Package lines.'))
             for line in each.package_lines:
                 line.write({'state':'confirm'})
                 line.vehicle_id.write({'is_book':True})
@@ -139,7 +148,7 @@ class package_booking_line(models.Model):
                               ('invoice', 'To Invoice'),
                               ('cancel', 'Cancel')], string="Status", copy=False, store=True, default='draft')
     invoiced = fields.Boolean(string="Invoiced")
-    invoice_lines = fields.Many2many('account.invoice.line', 'package_line_invoice_rel', 'package_line_id', 'invoice_line_id', string='Invoice Lines', copy=False)
+    invoice_id = fields.Many2one('account.invoice', string="Invoice", copy=False, readonly=True)
 
     @api.onchange('vehicle_id')
     def onchange_vehicle_id(self):

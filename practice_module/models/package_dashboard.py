@@ -25,5 +25,4 @@ class package_dashboard(models.Model):
                 FROM
                     package_book
                 GROUP By id,book_date)"""
-        print "\n-------------sql ",sql
         self._cr.execute(sql)

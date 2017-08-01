@@ -82,7 +82,7 @@
                         </group>
                         <notebook>
                             <page string="Vehicle Details">
-                                <field name="package_lines">
+                                <field name="package_lines" attrs="{'readonly':[('state','!=','draft')]}">
                                     <tree editable="top">
                                         <field name="package_id"
                                             invisible="1" />
@@ -97,6 +97,7 @@
                                         <field name="end_km" />
                                         <field name="total_km" />
                                         <field name="subtotal" />
+                                        <field name="invoice_id"/>
                                         <field name="invoiced"
                                             invisible="1" />
                                         <button name="%(action_start_ride)d"

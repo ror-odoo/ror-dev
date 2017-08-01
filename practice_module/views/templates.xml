@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="vehicles" name="Vehicles">
+        <t t-call="website.layout">
+            <t t-set="additional_title">Vehicles</t>
+            <div id="wrap">
+                <div class="oe_structure">
+                    <section>
+                        <h1 class="text-center">
+                            Our Vehicles
+                        </h1>
+                    </section>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-3 mb32" id="ref_left_column">
+                            <form action="" method="get">
+                                <div class="form-group">
+                                    <input type="text" name="search" class="search-query form-control"
+                                        placeholder="Search Vehicles"/>
+                                </div>
+                            </form>
+                            <h3>Group by Country</h3>
+                            <ul class="nav nav-pills nav-stacked mt16 mb32">
+                                <t t-foreach="countries" t-as="country_dict">
+                                    <t t-if="country_dict['country_id']">
+                                        <li
+                                            t-att-class="country_dict['country_id'][0] == current_country_id and 'active' or None">
+                                            <a
+                                                t-attf-href="/vehicles/#{ country_dict['country_id'][0] and 'country/%s' % slug(country_dict['country_id']) or '' }#{ search_path }">
+                                                <span class="badge pull-right"
+                                                    t-esc="country_dict['country_id_count'] or '0'" />
+                                                <t
+                                                    t-esc="country_dict['country_id'][1]" />
+                                            </a>
+                                        </li>
+                                    </t>
+                                </t>
+                            </ul>
+                        </div>
+                        <div class="col-md-8 col-md-offset-1" id="ref_content">
+                            <div class="row">
+                                <p t-if="not vehicles">No Vehicles found</p>
+                                <t t-if="vehicles">
+                                <table width="100%" border="1">
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-center">
+                                                <strong>Vehicle No
+                                                </strong>
+                                            </td>
+                                            <td class="text-center">
+                                                <strong>Vehicle Type
+                                                </strong>
+                                            </td>
+                                            <td class="text-center">
+                                                <strong>Vehicle Owner
+                                                </strong>
+                                            </td>
+                                            <td class="text-center">
+                                                <strong>Vehicle Register
+                                                    Date
+                                                </strong>
+                                            </td>
+                                            <td class="text-center">
+                                                <strong>Vehicle Price
+                                                    Per KM
+                                                </strong>
+                                            </td>
+                                            <td class="text-center">
+                                                <strong>Owner
+                                                    Mobile No
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                        <tr t-foreach="vehicles"
+                                            t-as="vehicle">
+                                            <td class="text-center">
+                                                <a
+                                                    t-attf-href="/vehicles/#{slug(vehicle)}">
+                                                    <span t-field="vehicle.name" />
+                                                </a>
+                                            </td>
+                                            <td class="text-center">
+                                                <span
+                                                    t-esc="vehicle.vehicle_type" />
+                                            </td>
+                                            <td class="text-center">
+                                                <span
+                                                    t-esc="vehicle.owner_id.name" />
+                                            </td>
+                                            <td class="text-center">
+                                                <span
+                                                    t-esc="vehicle.date_of_vehicle_register" />
+                                            </td>
+                                            <td class="text-center">
+                                                <span
+                                                    t-esc="vehicle.price_per_km" />
+                                            </td>
+                                            <td class="text-center">
+                                                <span t-esc="vehicle.mobile" />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="oe_structure mb32" />
+            </div>
+        </t>
+    </template>
+
+    <template id="details" name="Vehicle Detail">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="oe_structure" />
+                <div class="container mt16">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <ol t-if="not edit_page" class="breadcrumb">
+                                <li>
+                                    <a href="/vehicles">Our Vehicles</a>
+                                </li>
+                                <li class="active"><span t-esc="vehicle.name"/></li>
+                            </ol>
+                        </div>
+                        <t t-call="practice_module.vehicle_detail" />
+                    </div>
+                </div>
+                <div class="oe_structure" />
+            </div>
+        </t>
+    </template>
+
+    <template id="vehicle_detail" name="Vehicle Details">
+        <h1 class="col-md-12 text-center" id="vehicle_name" t-field="vehicle.name" />
+        <div class="col-md-4">
+            <div t-field="vehicle.image"
+                t-options='{"widget": "image", "class": "center-block mb16"}' />
+            <t t-raw="left_column or ''" />
+        </div>
+        <div class="col-md-8 mt32">
+            <t t-if="vehicle">
+                <table width="50%">
+                    <tr>
+                        <td><strong>Vehicle Owner</strong></td>
+                        <td><div t-field="vehicle.owner_id.name" /></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vehicle Registration Date</strong></td>
+                        <td><div t-field="vehicle.date_of_vehicle_register" /></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vehicle Type</strong></td>
+                        <td><div t-field="vehicle.vehicle_type" /></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Price Per KM</strong></td>
+                        <td><div t-field="vehicle.price_per_km" /></td>
+                    </tr>
+                </table>
+            </t>
+            <!-- <t t-raw="right_column or ''"/> -->
+        </div>
+    </template>
+</odoo>

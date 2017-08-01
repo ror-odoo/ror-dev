@@ -7,11 +7,12 @@
                     <form string="Vehicles" col="1">
                         <sheet>
                             <form string="Driver Contacts">
-                                <newline />
-                                <lable for="name" string="Vehicle No"/>
-                                <h1>
-                                    <field name="name"/>
-                                </h1>
+                                <field name="image" widget="image" class="oe_avatar"/>
+                                <div class="oe_title">
+                                    <h1>
+                                        <field name="name" default_focus="1"/>
+                                    </h1>
+                                </div>
                                 <group cols="4">
                                     <group string="Personal Information">
                                         <field name="owner_id" string="Vehicle Owner" domain="[('is_driver','=',True)]"/>

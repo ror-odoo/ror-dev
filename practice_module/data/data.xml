@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="menu_vehicle" model="website.menu">
+            <field name="name">Vehicles</field>
+            <field name="url">/vehicles</field>
+            <field name="parent_id" ref="website.main_menu" />
+            <field name="sequence" type="int">22</field>
+        </record>
+
+    </data>
+</odoo>
+        

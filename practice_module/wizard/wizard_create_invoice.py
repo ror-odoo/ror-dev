@@ -10,8 +10,8 @@ class wizard_create_invoice(models.TransientModel):
     def create_invoice(self):
         acc_obj = self.env['account.invoice']
         package_id = self.env['package.book'].browse(self._context.get('active_id'))
-#         if all([line.state == 'cancel' for line in package_id.package_line]):
-#             raise Warning('You Can not unable to create invoice because all ride has been canceled ')
+        if all([line.invoice_id for line in package_id.package_lines]):
+            raise Warning('There is no invoiceable Line')
         invoice_id = acc_obj.search([('partner_id', '=', package_id.partner_id.id),
                                      ('state', '=', 'draft'),
                                      ('package_id', '=', package_id.id)], limit=1)
@@ -25,12 +25,12 @@ class wizard_create_invoice(models.TransientModel):
                                                              'package_id':package_id.id,
                                                              'origin':package_id.name})
         for line in package_id.package_lines:
-            if not line.invoiced and line.state == 'stop':
+            if not line.invoice_id:
                 line_vals = {'name':line.name,
-                         'account_id':invoice_line_account_id,
-                         'quantity':line.total_km,
-                         'price_unit':line.vehicle_price,
-                         'invoice_id':invoice_id.id}
+                             'account_id':invoice_line_account_id,
+                             'quantity':line.total_km,
+                             'price_unit':line.vehicle_price,
+                             'invoice_id':invoice_id.id}
                 invoice_id.write({'invoice_line_ids':[(0, 0, line_vals)]})
-                line.write({'invoiced':True})
+                line.write({'invoice_id':invoice_id.id})
         return True
