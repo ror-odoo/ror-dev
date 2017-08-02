@@ -33,4 +33,6 @@ class wizard_create_invoice(models.TransientModel):
                              'invoice_id':invoice_id.id}
                 invoice_id.write({'invoice_line_ids':[(0, 0, line_vals)]})
                 line.write({'invoice_id':invoice_id.id})
+        if all([line.invoice_id for line in package_id.package_lines]):
+                package_id.write({'state':'done'})
         return True

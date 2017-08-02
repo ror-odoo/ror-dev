@@ -13,15 +13,15 @@
                         string="Cancel Package" class="btn-primary"
                         attrs="{'invisible':['|',('total_amount','>',0.00),('state','=','cancel')]}" />
                     <button name="%(action_create_invoice)d "
-                        string="Create Invoice" type="action"
-                        attrs="{'invisible':['|',('total_amount','=',0.00),('state','in',('draft','cancel'))]}" />
+                        string="Create Invoice" type="action" states="invoice" />
                     <field name="state" widget="statusbar"
-                        statusbar_visible="draft,confirm,cancel" />
+                        statusbar_visible="draft,confirm,invoice,done" />
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_invoice" type="object"
-                            class="oe_stat_button" icon="fa-pencil-square-o" attrs = "{'invisible':[('invoice_count','=',0)]}">
+                            class="oe_stat_button" icon="fa-pencil-square-o"
+                            attrs="{'invisible':[('invoice_count','=',0)]}">
                             <field name="invoice_count" widget="statinfo"
                                 string="Invoices" />
                         </button>
@@ -33,11 +33,9 @@
                         </h3>
                         <group cols="4">
                             <group string="Customer Infromation">
-                                <field name="book_date"
-                                    attrs="{'readonly':[('state','!=','draft')]}" />
+                                <field name="book_date"/>
                                 <field name="partner_id"
-                                    domain="[('customer','=',True)]"
-                                    attrs="{'readonly':[('state','!=','draft')]}" />
+                                    domain="[('customer','=',True)]" />
                                 <field name="mobile" required="1" />
                             </group>
                             <group string="Driver  Information">
@@ -82,7 +80,8 @@
                         </group>
                         <notebook>
                             <page string="Vehicle Details">
-                                <field name="package_lines" attrs="{'readonly':[('state','!=','draft')]}">
+                                <field name="package_lines"
+                                    attrs="{'readonly':[('state','!=','draft')]}">
                                     <tree editable="top">
                                         <field name="package_id"
                                             invisible="1" />
@@ -97,7 +96,7 @@
                                         <field name="end_km" />
                                         <field name="total_km" />
                                         <field name="subtotal" />
-                                        <field name="invoice_id"/>
+                                        <field name="invoice_id" />
                                         <field name="invoiced"
                                             invisible="1" />
                                         <button name="%(action_start_ride)d"

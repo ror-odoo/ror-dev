@@ -1,6 +1,6 @@
 from odoo import fields, models, api, _
 from odoo.exceptions import UserError
-from datetime import datetime
+from datetime import datetime, date , timedelta
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 
 class account_invoice(models.Model):
@@ -11,12 +11,21 @@ class account_invoice(models.Model):
 class package_book(models.Model):
     _name = 'package.book'
 
-#     @api.model
-#     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
-#         result = super(package_book, self).fields_view_get(view_id, view_type, toolbar=toolbar, submenu=submenu)
-#         doc = etree.XML(result['arch'])
-#         print "\n--------doc",doc
-#         return result
+    @api.model
+    def get_live_info(self):
+        today_package_count = self.search_count([('book_date', '=', date.today())])
+        last_seven_days_package_count = self.search_count([('book_date', '<=', date.today() - timedelta(days=7))])
+        total_package_count = self.search_count([])
+        total_confirm_package = self.search_count([('state', '=', 'confirm')])
+        total_cancel_package = self.search_count([('state', '=', 'cancel')])
+        total_running_package = self.env['package.booking.line'].search_count([('state', '=', 'running')])
+        values = {'today_package':today_package_count,
+                  'last_seven_days_package_count':last_seven_days_package_count,
+                  'total_package_count':total_package_count,
+                  'total_confirm_package':total_confirm_package,
+                  'total_cancel_package':total_cancel_package,
+                  'total_running_package':total_running_package}
+        return values
 
     @api.multi
     def unlink(self):
@@ -58,7 +67,6 @@ class package_book(models.Model):
     def _compute_total_amount(self):
         self.total_amount = sum([x.subtotal for x in self.package_lines])
 
-
     @api.onchange('pickup_address')
     def onchange_pickup_address(self):
         if self.pickup_address and self.partner_id:
@@ -86,8 +94,11 @@ class package_book(models.Model):
     package_lines = fields.One2many('package.booking.line', 'package_id', string="Vehicle Details")
     state = fields.Selection([('draft', 'Draft'),
                               ('confirm', 'Confirmed'),
+                              ('invoice', 'Invoice'),
+                              ('done', 'Done'),
                               ('cancel', 'Cancel')], string="Status", default='draft')
     invoice_count = fields.Integer(string='# of Invoices', compute='_get_invoiced', readonly=True)
+#     invoiced = fields.Boolean(compute="compute_check_invoice", string="Invoiced", store=True)
 
     @api.model
     def create(self, vals):

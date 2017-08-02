@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates>
+    <t t-name="LiveDashboard">
+        <div class="o_sales_dashboard">
+            <table class="table table-condensed">
+                <tr>
+                    <td class="o_text">
+                        <div class="o_highlight" />
+                        Today Packages
+                    </td>
+                    <td class="o_main" title="Today Packages">
+                        <a href="#" class="o_dashboard_action">
+                            <span class="o_highlight">
+                                <t t-esc="widget.data.today_package" />
+                            </span>
+                            <br />
+                            Packages
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="o_text">
+                        <div class="o_highlight" />
+                        Last 7 Days
+                    </td>
+                    <td class="o_main">
+                        <a href="#" class="o_dashboard_action">
+                            <span class="o_highlight">
+                                <t t-esc="widget.data.last_seven_days_package_count" />
+                            </span>
+                            <br />
+                            Packages
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="o_highlight" />
+                        Total Package
+                    </td>
+                    <td>
+                        <a href="#" class="total_package" name="practice_module.action_package_booking_form">
+                            <span class="o_highlight">
+                                <t t-esc="widget.data.total_package_count" />
+                            </span>
+                            <br />
+                            Packages
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="o_text">
+                        <div class="o_highlight" />
+                        Running Package
+                    </td>
+                    <td class="o_main">
+                        <a href="#" class="o_dashboard_action">
+                            <span class="o_highlight">
+                                <t t-esc="widget.data.total_running_package" />
+                            </span>
+                            <br />
+                            Packages
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="o_text">
+                        <div class="o_highlight" />
+                        Confirm Package
+                    </td>
+                    <td class="o_main">
+                        <a href="#" class="o_dashboard_action">
+                            <span class="o_highlight">
+                                <t t-esc="widget.data.total_confirm_package" />
+                            </span>
+                            <br />
+                            Packages
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </t>
+</templates>
