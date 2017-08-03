@@ -12,7 +12,7 @@
                                 <group>
                                     <field name="is_driver" readonly="1" />
                                     <field name="license_no" attrs = "{'required':[('is_driver','=',True)],
-                                                                      'invisible':[('is_driver','=',False)],}"/>
+                                                                      'invisible':[('is_driver','=',False)],}" widget="licenseno"/>
                                 </group>
                                 <div class="oe_title">
                                     <h1>

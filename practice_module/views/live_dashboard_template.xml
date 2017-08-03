@@ -4,6 +4,7 @@
         inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/practice_module/static/src/js/live_dashboard.js"></script>
+            <script type="text/javascript" src="/practice_module/static/src/js/form_license_widgets.js"></script>
         </xpath>
     </template>
     
